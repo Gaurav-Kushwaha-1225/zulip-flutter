@@ -249,7 +249,7 @@ class ChooseAccountPage extends StatelessWidget {
                 showSuggestedActionDialog(context: context,
                   title: zulipLocalizations.logOutConfirmationDialogTitle,
                   message: zulipLocalizations.logOutConfirmationDialogMessage,
-                  // TODO(#1032) "destructive" style for action button
+                  destructive: true,
                   actionButtonText: zulipLocalizations.logOutConfirmationDialogConfirmButton,
                   onActionButtonPress: () {
                     // TODO error handling if db write fails?

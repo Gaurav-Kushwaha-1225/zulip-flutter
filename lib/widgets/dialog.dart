@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/zulip_localizations.dart';
 
@@ -59,22 +60,52 @@ void showSuggestedActionDialog({
   required String message,
   required String? actionButtonText,
   required VoidCallback onActionButtonPress,
+  bool destructive = false,
 }) {
   final zulipLocalizations = ZulipLocalizations.of(context);
   showDialog<void>(
     context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: Text(title),
-      content: SingleChildScrollView(child: Text(message)),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: _dialogActionText(zulipLocalizations.dialogCancel)),
-        TextButton(
-          onPressed: () {
-            onActionButtonPress();
-            Navigator.pop(context);
-          },
-          child: _dialogActionText(actionButtonText ?? zulipLocalizations.dialogContinue)),
-      ]));
+    builder: (BuildContext context) {
+      return Theme.of(context).platform == TargetPlatform.android
+          ? AlertDialog(
+            title: Text(title),
+            content: SingleChildScrollView(child: Text(message)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: _dialogActionText(zulipLocalizations.dialogCancel),
+              ),
+              TextButton(
+                onPressed: () {
+                  onActionButtonPress();
+                  Navigator.pop(context);
+                },
+                child: _dialogActionText(
+                  actionButtonText ?? zulipLocalizations.dialogContinue,
+                ),
+              ),
+            ],
+          )
+          : CupertinoAlertDialog(
+            title: Text(title),
+            content: SingleChildScrollView(child: Text(message)),
+            actions: [
+              CupertinoDialogAction(
+                onPressed: () => Navigator.pop(context),
+                child: _dialogActionText(zulipLocalizations.dialogCancel),
+              ),
+              CupertinoDialogAction(
+                onPressed: () {
+                  onActionButtonPress();
+                  Navigator.pop(context);
+                },
+                isDestructiveAction: destructive,
+                child: _dialogActionText(
+                  actionButtonText ?? zulipLocalizations.dialogContinue,
+                ),
+              ),
+            ],
+          );
+    },
+  );
 }
