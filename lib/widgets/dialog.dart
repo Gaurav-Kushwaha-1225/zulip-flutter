@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/zulip_localizations.dart';
+
+import '../generated/l10n/zulip_localizations.dart';
 
 Widget _dialogActionText(String text) {
   return Text(
