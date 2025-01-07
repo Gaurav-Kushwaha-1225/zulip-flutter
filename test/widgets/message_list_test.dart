@@ -24,6 +24,7 @@ import 'package:zulip/widgets/message_list.dart';
 import 'package:zulip/widgets/page.dart';
 import 'package:zulip/widgets/store.dart';
 import 'package:zulip/widgets/channel_colors.dart';
+import 'package:zulip/widgets/theme.dart';
 
 import '../api/fake_api.dart';
 import '../example_data.dart' as eg;
@@ -1094,6 +1095,79 @@ void main() {
       checkUser(users[2], isBot: false);
 
       debugNetworkImageHttpClientProvider = null;
+    });
+
+
+    group('action sheet visual feedback', () {
+      late Message message;
+
+      setUp(() {
+        // Create a basic message for testing
+        message = eg.streamMessage();
+      });
+
+      // Helper function to find DecoratedBox and get its color
+      Color? getBackgroundColor(WidgetTester tester) {
+        final decoratedBox = tester.widget<DecoratedBox>(
+          find.descendant(
+            of: find.byType(MessageWithPossibleSender),
+            matching: find.byType(DecoratedBox),
+          ),
+        );
+        return (decoratedBox.decoration as BoxDecoration).color;
+      }
+
+      Future<void> buildTestWidget(WidgetTester tester) async {
+        await setupMessageListPage(
+          tester,
+          messages: [message],
+        );
+      }
+
+      testWidgets('starts with transparent background', (tester) async {
+        await buildTestWidget(tester);
+
+        expect(
+          getBackgroundColor(tester),
+          equals(Colors.transparent),
+          reason: 'Message should start with transparent background',
+        );
+      });
+
+      testWidgets('shows tint color when long pressed', (tester) async {
+        await buildTestWidget(tester);
+
+        // Trigger long press
+        await tester.longPress(find.byType(MessageWithPossibleSender));
+        await tester.pump();
+
+        final expectedTint = DesignVariables.of(tester.element(find.byType(MessageWithPossibleSender)))
+            .pressedTint;
+
+        expect(
+          getBackgroundColor(tester),
+          equals(expectedTint),
+          reason: 'Message should show tint color during long press',
+        );
+      });
+
+      testWidgets('returns to transparent after action sheet dismissal', (tester) async {
+        await buildTestWidget(tester);
+
+        // Open action sheet
+        await tester.longPress(find.byType(MessageWithPossibleSender));
+        await tester.pump();
+
+        // Simulate action sheet dismissal by tapping outside
+        await tester.tapAt(const Offset(0, 0));
+        await tester.pumpAndSettle();
+
+        expect(
+          getBackgroundColor(tester),
+          equals(Colors.transparent),
+          reason: 'Message should return to transparent after dismissal',
+        );
+      });
     });
   });
 
