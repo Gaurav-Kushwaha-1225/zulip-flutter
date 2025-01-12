@@ -186,7 +186,7 @@ class DesignVariables extends ThemeExtension<DesignVariables> {
       contextMenuItemBg: const Color(0xff7977fe),
       contextMenuItemText: const Color(0xff9398fd),
       editorButtonPressedBg: Colors.white.withValues(alpha: 0.06),
-      foreground: const Color(0xffffffff),
+      foreground: const Color(0xff0f0f0f),
       icon: const Color(0xff7977fe),
       iconSelected: Colors.white.withValues(alpha: 0.8),
       labelCounterUnread: const Color(0xffffffff).withValues(alpha: 0.73),

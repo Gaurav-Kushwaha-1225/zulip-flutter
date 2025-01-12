@@ -55,7 +55,7 @@ class MessageListTheme extends ThemeExtension<MessageListTheme> {
 
   MessageListTheme.dark() :
     this._(
-      dateSeparator: Colors.white,
+      dateSeparator: Colors.white.withValues(alpha: 51),
       dateSeparatorText: const HSLColor.fromAHSL(0.5, 0, 0, 1).toColor(),
       dmRecipientHeaderBg: const HSLColor.fromAHSL(1, 0, 0, 0.14).toColor(),
       messageTimestamp: const HSLColor.fromAHSL(0.5, 0, 0, 1).toColor(),
